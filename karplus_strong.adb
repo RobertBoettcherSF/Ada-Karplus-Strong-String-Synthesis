@@ -8,14 +8,14 @@ package body Karplus_Strong is
 
    use Ada.Numerics.Float_Random;
 
-   Generator : Generator;
+   Rand_Gen    : Generator;
    Initialized : Boolean := False;
 
    -- Helper: Initialize Random Generator
    procedure Init_Gen is
    begin
       if not Initialized then
-         Reset (Generator);
+         Reset (Rand_Gen);
          Initialized := True;
       end if;
    end Init_Gen;
@@ -54,7 +54,7 @@ package body Karplus_Strong is
 
       -- Step 1: Excitation (fill delay line with white noise)
       for I in Delay_Line'Range loop
-         Delay_Line (I) := Sample_Type (Random (Generator) * 2.0 - 1.0);
+         Delay_Line (I) := Sample_Type (Random (Rand_Gen) * 2.0 - 1.0);
       end loop;
 
       -- Step 2: Feedback loop with low-pass filter
@@ -99,7 +99,7 @@ package body Karplus_Strong is
 
       -- Excitation phase
       for I in Delay_Line'Range loop
-         Delay_Line (I) := Sample_Type (Random (Generator) * 2.0 - 1.0);
+         Delay_Line (I) := Sample_Type (Random (Rand_Gen) * 2.0 - 1.0);
       end loop;
 
       -- Synthesis loop
@@ -110,7 +110,7 @@ package body Karplus_Strong is
          Prev_Sample := Delay_Line (Read_Idx);
          
          -- Randomly flip sign based on Blend_Factor to create inharmonicity
-         if Sample_Type (Random (Generator)) < Blend_Factor then
+         if Sample_Type (Random (Rand_Gen)) < Blend_Factor then
             New_Sample := -New_Sample;
          end if;
          
@@ -152,7 +152,7 @@ package body Karplus_Strong is
       Init_Gen;
 
       for I in Delay_Line'Range loop
-         Delay_Line (I) := Sample_Type (Random (Generator) * 2.0 - 1.0);
+         Delay_Line (I) := Sample_Type (Random (Rand_Gen) * 2.0 - 1.0);
       end loop;
 
       for I in Output'Range loop
